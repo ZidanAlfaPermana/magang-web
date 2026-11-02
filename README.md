@@ -1,0 +1,7 @@
+## Apa bedanya pendekatan imperatif dan deklaratif?
+
+Pendekatan imperatif adalah cara pemrograman di mana kita menginstruksikan komputer langkah demi langkah secara mendetail mengenai bagaimana suatu tugas harus dikerjakan, layaknya memberikan resep masakan lengkap dengan urutannya. Sebaliknya, pendekatan deklaratif adalah cara pemrograman yang hanya berfokus pada apa hasil akhir yang ingin dicapai tanpa harus merinci instruksi langkah demi langkah secara manual, mirip seperti memesan makanan di restoran di mana kita hanya menyebutkan menu yang diinginkan dan membiarkan pihak lain yang mengerjakannya.
+
+## Kenapa frontend dan backend dibuat sebagai dua aplikasi terpisah?
+
+pemisahan frontend dan backend menjadi dua aplikasi yang berbeda didasari oleh prinsip agar masing-masing bagian memiliki tanggung jawab yang spesifik dan terisolasi. Frontend bertanggung jawab penuh terhadap tampilan visual dan interaksi pengguna di layar, sedangkan backend fokus mengelola logika bisnis, pemrosesan data, serta keamanan di balik layar. Dengan pemisahan ini, pengembangan aplikasi menjadi jauh lebih fleksibel karena satu sistem backend yang sama dapat digunakan secara bersamaan untuk melayani berbagai jenis frontend, seperti situs web, aplikasi Android, dan aplikasi iOS, tanpa harus menulis ulang kode pemrosesan datanya dari awal.
