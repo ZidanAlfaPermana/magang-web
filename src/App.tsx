@@ -3,6 +3,8 @@ import PesertaCard from "./components/PesertaCard";
 import Kartu from "./components/Kartu.tsx";
 import {daftarPeserta} from "./data/pesertaTiruan.ts";
 import NomorUrut from "./components/NomorUrut.tsx";
+import { jurnalTiruan } from "./data/jurnalTiruan";
+import {HasilJurnal} from "./components/HasilJurnal.tsx";
 
 export default function App() {
     return (
@@ -26,6 +28,13 @@ export default function App() {
 
             <Kartu judul="Catatan">
                 <p>Teks biasa tanpa komponen lain.</p>
+            </Kartu>
+
+            <Kartu judul="Jurnal">
+                <HasilJurnal status="berhasil" data={jurnalTiruan} />
+                <HasilJurnal status="berhasil" data={[]} />
+                <HasilJurnal status="memuat" />
+                <HasilJurnal status="gagal" pesan="Koneksi terputus" />
             </Kartu>
         </main>
     );
