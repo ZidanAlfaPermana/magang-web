@@ -5,10 +5,13 @@ import {daftarPeserta} from "./data/pesertaTiruan.ts";
 import NomorUrut from "./components/NomorUrut.tsx";
 import { jurnalTiruan } from "./data/jurnalTiruan";
 import {HasilJurnal} from "./components/HasilJurnal.tsx";
+import {Button} from "./components/ui/Button.tsx";
 
 export default function App() {
     return (
         <main>
+            <h1>Magang Web</h1>
+
             <Kartu judul="Daftar Peserta">
                 {daftarPeserta.map((peserta, indeks) => (
                     <div key={peserta.id}>
@@ -36,6 +39,14 @@ export default function App() {
                 <HasilJurnal status="memuat" />
                 <HasilJurnal status="gagal" pesan="Koneksi terputus" />
             </Kartu>
+
+            {/*Varian yang tidak ada*/}
+            {/*<Button variant="ngasal">Uji</Button>*/}
+            <Button disabled onClick={() => console.log("klik")}>Tombol nonaktif</Button>
+            <form onSubmit={(e) => { e.preventDefault(); console.log("form terkirim"); }}>
+                <Button>Tanpa type</Button>
+                <Button type="submit">Type submit</Button>
+            </form>
         </main>
     );
 }

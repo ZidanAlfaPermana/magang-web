@@ -1,0 +1,4 @@
+.alert { padding: 12px 16px; border-radius: var(--jari-jari); border: 1px solid; margin-bottom: 8px; }
+.info { color: var(--warna-utama); border-color: var(--warna-utama); background: color-mix(in srgb, var(--warna-utama) 10%, white); }
+.sukses { color: var(--warna-sukses); border-color: var(--warna-sukses); background: color-mix(in srgb, var(--warna-sukses) 10%, white); }
+.bahaya { color: var(--warna-bahaya); border-color: var(--warna-bahaya); background: color-mix(in srgb, var(--warna-bahaya) 10%, white); }

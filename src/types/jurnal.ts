@@ -12,3 +12,5 @@ export interface Jurnal {
     statusReview: "belum" | "sudah";
     lampiran: Lampiran[];
 }
+
+export type StatusReview = "belum" | "sudah";
