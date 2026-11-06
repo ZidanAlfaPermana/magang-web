@@ -6,7 +6,7 @@ interface KartuProps {
     children: ReactNode;
 }
 
-export default function Kartu({ judul, children }: KartuProps) {
+export function Kartu({ judul, children }: KartuProps) {
     return (
         <section className={styles.kartu}>
             <h2 className={styles.judul}>{judul}</h2>

@@ -1,5 +1,5 @@
 import type { Jurnal } from "../types/jurnal";
-import { DaftarJurnal } from "./DaftarJurnal";
+import { DaftarJurnal } from "./jurnal/DaftarJurnal.tsx";
 
 type HasilJurnalProps =
     | { status: "memuat" }

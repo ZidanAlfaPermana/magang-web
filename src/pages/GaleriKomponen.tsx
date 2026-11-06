@@ -1,10 +1,10 @@
-import Kartu from "../components/Kartu";
+import { Kartu } from "../components/ui/Kartu";
 import { Button } from "../components/ui/Button";
 import { Alert } from "../components/ui/Alert";
 import { Badge } from "../components/ui/Badge";
 import { StatusBadge } from "../components/jurnal/StatusBadge";
 import {jurnalTiruan} from "../data/jurnalTiruan.ts";
-import {JurnalCard} from "../components/JurnalCard.tsx";
+import {JurnalCard} from "../components/jurnal/JurnalCard.tsx";
 import {TombolKoordinat} from "../components/TombolKoordinat.tsx";
 
 const varianTombol = ["primary", "secondary", "danger"] as const;

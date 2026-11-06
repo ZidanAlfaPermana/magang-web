@@ -1,7 +1,10 @@
+const formatterTanggal = new Intl.DateTimeFormat("id-ID", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+    timeZone: "Asia/Jakarta",
+});
+
 export function formatTanggal(iso: string): string {
-    return new Date(iso).toLocaleDateString("id-ID", {
-        day: "numeric",
-        month: "long",
-        year: "numeric",
-    });
+    return formatterTanggal.format(new Date(iso));
 }

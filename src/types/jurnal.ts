@@ -1,3 +1,7 @@
+// src/types/jurnal.ts: cerminan schema Jurnal di dokumentasi API (Swagger)
+// Perhatikan: field opsional dari API bisa bernilai null, bukan hanya undefined.
+export type StatusReview = "belum" | "sudah";
+
 export interface Lampiran {
     url: string;
     keterangan?: string;
@@ -5,12 +9,13 @@ export interface Lampiran {
 
 export interface Jurnal {
     id: number;
-    tanggal: string;
+    pesertaId: number;
     kegiatan: string;
-    hambatan: string | null;
-    rencanaBesok: string;
-    statusReview: "belum" | "sudah";
-    lampiran: Lampiran[];
+    hambatan?: string | null;
+    linkCommit?: string | null;
+    lampiran?: Lampiran[] | null;
+    statusReview: StatusReview;
+    catatanMentor?: string | null;
+    createdAt: string;      // tanggal ISO 8601, mis. "2026-10-28T03:15:00.000Z"
 }
-
-export type StatusReview = "belum" | "sudah";
+// Di Minggu 19, tipe tulisan tangan ini diganti tipe yang DIHASILKAN dari dokumen OpenAPI.

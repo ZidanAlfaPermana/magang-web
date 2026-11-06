@@ -1,0 +1,3 @@
+.ringkasan { display: flex; flex-wrap: wrap; gap: 24px; margin: 0; }
+.item dt { font-size: 0.85rem; }
+.item dd { margin: 0; font-size: 1.5rem; font-weight: 700; }
