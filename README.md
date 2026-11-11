@@ -81,3 +81,33 @@ Boolean(jurnal.hambatan) || Boolean(jurnal.catatanMentor) || jumlahLampiran > 0;
 ```
 </details>
 </details>
+
+<details>
+<summary>Gambar aliran data</summary>
+
+```mermaid
+flowchart TD
+    App["App<br/>state: jurnal"]
+    Header["Header"]
+    Ringkasan["RingkasanJurnal"]
+    Daftar["DaftarJurnal"]
+    Card["JurnalCard<br/>state: terbuka"]
+
+    App -- "namaPeserta" --> Header
+    App -- "jurnal" --> Ringkasan
+    App -- "jurnal, onHapus, onUbahStatus" --> Daftar
+    Daftar -- "jurnal, onHapus, onUbahStatus" --> Card
+    Card -. "onHapus(id), onUbahStatus(id, status)" .-> Daftar
+    Daftar -. "onHapus(id), onUbahStatus(id, status)" .-> App
+```
+
+Garis penuh adalah data yang turun lewat props, sedangkan garis putus-putus adalah peristiwa yang naik lewat callback. `App` adalah pemilik tunggal data jurnal. Peristiwa klik naik sampai ke `App`, yang mengubah state dan membuat semua komponen anak menerima data terbaru.
+</details>
+
+<details>
+<summary>Mengapa Key Harus Berupa ID Unik?</summary>
+
+React mengenali item lewat key. Kalau key berupa indeks, yang dikenali hanya posisinya, bukan identitas item. 
+Setelah “Satu” dihapus, “Dua” pindah ke indeks 0 dan memakai key yang tadinya milik “Satu”, sehingga React memakai ulang elemen li lama beserta isi input-nya dan AAA menempel di samping “Dua”. 
+Dengan key berupa nilai unik dan stabil, React tahu elemen milik “Satu” memang dibuang dan elemen “Dua” dipertahankan beserta isinya. Itu sebabnya key harus berupa ID dari data, bukan indeks.
+</details>

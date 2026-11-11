@@ -1,5 +1,5 @@
 import { useState } from "react";
-import type { Jurnal } from "../../types/jurnal";
+import type { Jurnal, StatusReview } from "../../types/jurnal";
 import { formatTanggal } from "../../utils/format";
 import { Button } from "../ui/Button";
 import { StatusBadge } from "./StatusBadge";
@@ -8,13 +8,15 @@ import styles from "./JurnalCard.module.css";
 interface JurnalCardProps {
     jurnal: Jurnal;
     onHapus?: (id: number) => void;
+    onUbahStatus?: (id: number, status: StatusReview) => void;
 }
 
-export function JurnalCard({ jurnal, onHapus }: JurnalCardProps) {
+export function JurnalCard({ jurnal, onHapus, onUbahStatus }: JurnalCardProps) {
     const [terbuka, setTerbuka] = useState(false);
     const jumlahLampiran = jurnal.lampiran?.length ?? 0;
     const adaDetail =
         Boolean(jurnal.hambatan) || Boolean(jurnal.catatanMentor) || jumlahLampiran > 0;
+    const sudahDireview = jurnal.statusReview === "sudah";
 
     return (
         <article className={styles.kartu}>
@@ -48,6 +50,15 @@ export function JurnalCard({ jurnal, onHapus }: JurnalCardProps) {
                         Lihat commit
                     </a>
                 </p>
+            )}
+            {onUbahStatus && (
+                <Button
+                    variant="secondary"
+                    ukuran="sm"
+                    onClick={() => onUbahStatus(jurnal.id, sudahDireview ? "belum" : "sudah")}
+                >
+                    {sudahDireview ? "Kembalikan ke belum" : "Tandai sudah direview"}
+                </Button>
             )}
             {onHapus && (
                 <Button

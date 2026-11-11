@@ -4,6 +4,7 @@ import { Penghitung } from "./Penghitung";
 import { Snapshot } from "./Snapshot";
 import { DuaPenghitung } from "./DuaPenghitung";
 import { ContohTipeState } from "./ContohTipeState";
+import {DemoKunciIndeks} from "./DemoKunciIndeks.tsx";
 
 export default function HalamanLatihan() {
     return (
@@ -22,6 +23,9 @@ export default function HalamanLatihan() {
             </Kartu>
             <Kartu judul="Ketik state">
                 <ContohTipeState />
+            </Kartu>
+            <Kartu judul="Bug key indeks">
+                <DemoKunciIndeks />
             </Kartu>
         </div>
     );
