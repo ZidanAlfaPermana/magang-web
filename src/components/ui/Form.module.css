@@ -1,0 +1,6 @@
+.kolom { display: flex; flex-direction: column; gap: 4px; margin-bottom: 12px; }
+.kolom textarea, .kolom input { padding: 8px; border: 1px solid #d1d5db; border-radius: var(--jari-jari); font: inherit; }
+.kolom textarea { min-height: 80px; }
+.kolom textarea:focus-visible, .kolom input:focus-visible { outline: 3px solid var(--warna-utama); outline-offset: 2px; }
+.kolom [aria-invalid="true"] { border-color: var(--warna-bahaya); }
+.error { margin: 0; color: var(--warna-bahaya); font-size: 0.9rem; }

@@ -8,3 +8,8 @@ export interface Peserta {
     status: "aktif" | "lulus" | "berhenti";
     role: "peserta" | "mentor";
 }
+
+export interface ProfilBaru {
+    nama: string;
+    telepon: string | null;
+}
