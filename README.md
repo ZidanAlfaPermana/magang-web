@@ -34,6 +34,21 @@ src/
 - **Ringkasan dihitung dari array saat render.** Angka total, sudah, dan belum direview tidak disimpan terpisah, jadi tidak bisa tidak sinkron dengan datanya.
 - **Pengurutan memakai salinan array.** `[...jurnal].sort(...)` menjaga data asli tidak berubah, sehingga komponen tetap murni.
 
+---
+
+## Efek atau bukan?
+
+| Kasus | Jawaban | Alasan |
+|---|---|---|
+| Menghitung jumlah jurnal belum direview | Data turunan | Bisa dihitung dari `jurnal` saat render, misalnya `jurnal.filter(...).length`. Tidak perlu state atau efek. |
+| Mengosongkan form setelah jurnal berhasil disimpan | Event handler | Terjadi karena pengguna menekan Simpan. Reset state dipanggil di handler yang sama, bukan di efek yang memantau. |
+| Menyimpan jurnal ke localStorage setiap berubah | Efek | Menyinkronkan state dengan sistem di luar React (penyimpanan browser), seperti di `useLocalStorage`. |
+| Mengatur judul tab sesuai jumlah jurnal | Efek | `document.title` ada di luar React dan perlu disinkronkan setelah render. |
+| Menampilkan "Berhasil disimpan" setelah Simpan ditekan | Event handler | Respons langsung terhadap aksi pengguna. Pesan diatur di handler, bukan efek yang menunggu perubahan state. |
+| Mengurutkan daftar dari terbaru | Data turunan | Dihitung saat render dengan `[...jurnal].sort(...)`, tanpa state tambahan. |
+
+---
+
 ## Catatan Belajar
 
 <details>

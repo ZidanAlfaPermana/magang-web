@@ -20,4 +20,6 @@ export interface Jurnal {
 }
 
 export type JurnalBaru = Pick<Jurnal, "kegiatan" | "hambatan" | "linkCommit">;
+
+export type FilterStatus = "semua" | StatusReview;
 // Di Minggu 19, tipe tulisan tangan ini diganti tipe yang DIHASILKAN dari dokumen OpenAPI.
