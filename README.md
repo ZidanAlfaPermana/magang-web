@@ -1,6 +1,6 @@
 # Magang Web
 
-Halaman statis untuk melihat jurnal harian peserta magang beserta ringkasan status review. Dibuat dengan React, TypeScript, dan Vite.
+Aplikasi jurnal harian magang: peserta menulis jurnal, mentor me-review dengan catatan. Dibuat dengan React, TypeScript, dan Vite.
 
 ## Cara Menjalankan
 
@@ -13,26 +13,44 @@ npm run dev
 
 Perintah lain: `npm run lint` dan `npm run build`.
 
+## Fitur
+
+- Tambah jurnal lewat form dengan validasi di sisi klien (kolom opsional yang kosong disimpan sebagai `null`)
+- Hapus jurnal dengan konfirmasi dua langkah
+- Saklar peran Peserta dan Mentor. Mentor dapat me-review: status "sudah" wajib disertai catatan minimal 5 karakter, status "belum" boleh tanpa catatan
+- Filter status dan pencarian kegiatan (ditunda 300 ms), pintasan `/` untuk memfokuskan pencarian
+- Ringkasan total, sudah, dan belum direview dihitung dari data
+- Data bertahan setelah muat ulang lewat localStorage dengan pemeriksaan bentuk data
+- Judul tab menampilkan jumlah jurnal belum direview
+- Dua keadaan kosong yang berbeda: belum ada jurnal, dan hasil filter kosong
+
+## Rencana Pengembangan
+
+- Menyambungkan aplikasi ke API untuk mengambil dan menyimpan jurnal, menggantikan data tiruan dan localStorage
+
 ## Struktur Folder
 
-```text
+```
 src/
 ├── components/
-│ ├── ui/ Button, Alert, Badge, Kartu (generik)
-│ ├── jurnal/ JurnalCard, DaftarJurnal, StatusBadge, RingkasanJurnal
-│ └── layout/ Header
-├── data/ data tiruan (sementara)
-├── types/ peserta.ts, jurnal.ts
-├── utils/ cx.ts, format.ts
-├── pages/ GaleriKomponen
-└── App.tsx menyusun halaman
+│   ├── ui/        Button, Alert, Kartu, Badge
+│   ├── jurnal/    FormJurnal, DaftarJurnal, JurnalCard, PanelReview, RingkasanJurnal,
+│   │              StatusBadge, PencarianJurnal, FilterJurnal
+│   └── layout/    Header, SaklarPeran
+├── hooks/         useLocalStorage, usePenundaan
+├── data/          jurnal (data tiruan)
+├── types/         peserta, jurnal
+├── utils/         cx, format, validasiJurnal, guard, daftar
+├── App.tsx
+└── main.tsx
 ```
 
 ## Keputusan Desain
 
-- **Komponen ui dipisah dari komponen jurnal.** Komponen ui tidak mengenal istilah jurnal sehingga bisa dipakai ulang di fitur lain, sedangkan komponen jurnal yang memakainya.
-- **Ringkasan dihitung dari array saat render.** Angka total, sudah, dan belum direview tidak disimpan terpisah, jadi tidak bisa tidak sinkron dengan datanya.
-- **Pengurutan memakai salinan array.** `[...jurnal].sort(...)` menjaga data asli tidak berubah, sehingga komponen tetap murni.
+- **State jurnal diangkat ke `App`.** Ringkasan, daftar, dan judul tab membaca satu sumber data, sehingga tidak mungkin tidak sinkron.
+- **Hasil filter, urutan, dan angka ringkasan adalah data turunan.** Dihitung saat render dan tidak disimpan sebagai state, jadi tidak ada salinan basi.
+- **Validasi berupa fungsi murni** (`validasiFormJurnal`, `validasiReview`) yang terpisah dari komponen. Aturannya meniru DTO di backend, sedangkan server tetap penentu akhir.
+- **Data dari localStorage diperiksa dengan type guard, bukan `as`.** Tipe TypeScript hilang saat runtime, dan isi localStorage bisa diubah pengguna.
 
 ---
 

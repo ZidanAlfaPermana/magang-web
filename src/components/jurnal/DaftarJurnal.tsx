@@ -1,28 +1,27 @@
 import type { Jurnal, StatusReview } from "../../types/jurnal";
+import type { Peran } from "../../types/peserta";
 import { Alert } from "../ui/Alert";
 import { JurnalCard } from "./JurnalCard";
 import styles from "./DaftarJurnal.module.css";
 
 interface DaftarJurnalProps {
     jurnal: readonly Jurnal[];
+    peran: Peran;
+    pesanKosong: string;
     onHapus: (id: number) => void;
-    onUbahStatus: (id: number, status: StatusReview) => void;
+    onReview: (id: number, status: StatusReview, catatan: string) => void;
 }
 
-export function DaftarJurnal({ jurnal, onHapus, onUbahStatus }: DaftarJurnalProps) {
+export function DaftarJurnal({ jurnal, peran, pesanKosong, onHapus, onReview }: DaftarJurnalProps) {
     if (jurnal.length === 0) {
-        return <Alert tipe="info">Belum ada jurnal.</Alert>;
+        return <Alert tipe="info">{pesanKosong}</Alert>;
     }
-
-    const terbaruDulu = [...jurnal].sort(
-        (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-    );
 
     return (
         <ul className={styles.daftar}>
-            {terbaruDulu.map((j) => (
+            {jurnal.map((j) => (
                 <li key={j.id}>
-                    <JurnalCard jurnal={j} onHapus={onHapus} onUbahStatus={onUbahStatus} />
+                    <JurnalCard jurnal={j} peran={peran} onHapus={onHapus} onReview={onReview} />
                 </li>
             ))}
         </ul>

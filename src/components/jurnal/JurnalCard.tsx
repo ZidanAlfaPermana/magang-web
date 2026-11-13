@@ -1,22 +1,25 @@
 import { useState } from "react";
 import type { Jurnal, StatusReview } from "../../types/jurnal";
+import type { Peran } from "../../types/peserta";
 import { formatTanggal } from "../../utils/format";
 import { Button } from "../ui/Button";
+import { PanelReview } from "./PanelReview";
 import { StatusBadge } from "./StatusBadge";
 import styles from "./JurnalCard.module.css";
 
 interface JurnalCardProps {
     jurnal: Jurnal;
+    peran?: Peran;
     onHapus?: (id: number) => void;
-    onUbahStatus?: (id: number, status: StatusReview) => void;
+    onReview?: (id: number, status: StatusReview, catatan: string) => void;
 }
 
-export function JurnalCard({ jurnal, onHapus, onUbahStatus }: JurnalCardProps) {
+export function JurnalCard({ jurnal, peran = "peserta", onHapus, onReview }: JurnalCardProps) {
     const [terbuka, setTerbuka] = useState(false);
+    const [konfirmasiHapus, setKonfirmasiHapus] = useState(false);
+    const [sedangReview, setSedangReview] = useState(false);
     const jumlahLampiran = jurnal.lampiran?.length ?? 0;
-    const adaDetail =
-        Boolean(jurnal.hambatan) || Boolean(jurnal.catatanMentor) || jumlahLampiran > 0;
-    const sudahDireview = jurnal.statusReview === "sudah";
+    const adaDetail = Boolean(jurnal.hambatan) || jumlahLampiran > 0;
 
     return (
         <article className={styles.kartu}>
@@ -25,6 +28,9 @@ export function JurnalCard({ jurnal, onHapus, onUbahStatus }: JurnalCardProps) {
                 <StatusBadge status={jurnal.statusReview} />
             </header>
             <p className={styles.kegiatan}>{jurnal.kegiatan}</p>
+            {jurnal.catatanMentor && (
+                <p className={styles.baris}>Catatan mentor: {jurnal.catatanMentor}</p>
+            )}
             {adaDetail && (
                 <Button
                     variant="secondary"
@@ -38,9 +44,6 @@ export function JurnalCard({ jurnal, onHapus, onUbahStatus }: JurnalCardProps) {
             {terbuka && (
                 <div>
                     {jurnal.hambatan && <p className={styles.baris}>Hambatan: {jurnal.hambatan}</p>}
-                    {jurnal.catatanMentor && (
-                        <p className={styles.baris}>Catatan mentor: {jurnal.catatanMentor}</p>
-                    )}
                     {jumlahLampiran > 0 && <p className={styles.baris}>Lampiran ({jumlahLampiran})</p>}
                 </div>
             )}
@@ -51,25 +54,54 @@ export function JurnalCard({ jurnal, onHapus, onUbahStatus }: JurnalCardProps) {
                     </a>
                 </p>
             )}
-            {onUbahStatus && (
-                <Button
-                    variant="secondary"
-                    ukuran="sm"
-                    onClick={() => onUbahStatus(jurnal.id, sudahDireview ? "belum" : "sudah")}
-                >
-                    {sudahDireview ? "Kembalikan ke belum" : "Tandai sudah direview"}
-                </Button>
+            {sedangReview && peran === "mentor" && onReview && (
+                <PanelReview
+                    jurnal={jurnal}
+                    onSimpan={(status, catatan) => {
+                        onReview(jurnal.id, status, catatan);
+                        setSedangReview(false);
+                    }}
+                    onBatal={() => setSedangReview(false)}
+                />
             )}
-            {onHapus && (
-                <Button
-                    variant="danger"
-                    ukuran="sm"
-                    aria-label={`Hapus jurnal: ${jurnal.kegiatan}`}
-                    onClick={() => onHapus(jurnal.id)}
-                >
-                    Hapus
-                </Button>
-            )}
+            <div className={styles.aksi}>
+                {peran === "mentor" && onReview && !sedangReview && (
+                    <Button
+                        variant="secondary"
+                        ukuran="sm"
+                        aria-label={`Review jurnal: ${jurnal.kegiatan}`}
+                        onClick={() => setSedangReview(true)}
+                    >
+                        Review
+                    </Button>
+                )}
+                {onHapus &&
+                    (konfirmasiHapus ? (
+                        <div role="group" aria-label="Konfirmasi hapus" className={styles.aksi}>
+                            <span>Yakin?</span>
+                            <Button variant="danger" ukuran="sm" onClick={() => onHapus(jurnal.id)}>
+                                Ya
+                            </Button>
+                            <Button
+                                variant="secondary"
+                                ukuran="sm"
+                                autoFocus
+                                onClick={() => setKonfirmasiHapus(false)}
+                            >
+                                Batal
+                            </Button>
+                        </div>
+                    ) : (
+                        <Button
+                            variant="danger"
+                            ukuran="sm"
+                            aria-label={`Hapus jurnal: ${jurnal.kegiatan}`}
+                            onClick={() => setKonfirmasiHapus(true)}
+                        >
+                            Hapus
+                        </Button>
+                    ))}
+            </div>
         </article>
     );
 }

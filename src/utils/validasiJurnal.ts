@@ -1,3 +1,22 @@
+import type { StatusReview } from "../types/jurnal";
+
+export interface FormReviewState {
+    status: StatusReview;
+    catatan: string;
+}
+
+export type FormReviewErrors = Partial<Record<keyof FormReviewState, string>>;
+
+export function validasiReview(nilai: FormReviewState): FormReviewErrors {
+    const errors: FormReviewErrors = {};
+
+    if (nilai.status === "sudah" && nilai.catatan.trim().length < 5) {
+        errors.catatan = "Catatan wajib diisi minimal 5 karakter saat jurnal ditandai sudah direview";
+    }
+
+    return errors;
+}
+
 export interface FormJurnalState {
     kegiatan: string;
     hambatan: string;

@@ -13,3 +13,5 @@ export interface ProfilBaru {
     nama: string;
     telepon: string | null;
 }
+
+export type Peran = Peserta["role"];

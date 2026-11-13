@@ -1,12 +1,12 @@
 import type { FilterStatus } from "../../types/jurnal";
 import { adalahFilterStatus } from "../../utils/guard";
 
-interface FilterStatusJurnalProps {
+interface FilterJurnalProps {
     nilai: FilterStatus;
     onUbah: (nilai: FilterStatus) => void;
 }
 
-export function FilterStatusJurnal({ nilai, onUbah }: FilterStatusJurnalProps) {
+export function FilterJurnal({ nilai, onUbah }: FilterJurnalProps) {
     return (
         <label>
             Status review

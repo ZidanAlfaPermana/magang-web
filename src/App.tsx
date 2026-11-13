@@ -1,19 +1,20 @@
-import {useEffect, useState} from "react";
+import { useEffect, useState } from "react";
 import { Header } from "./components/layout/Header";
+import { SaklarPeran } from "./components/layout/SaklarPeran";
 import { Kartu } from "./components/ui/Kartu";
 import { RingkasanJurnal } from "./components/jurnal/JurnalRingkas";
+import { FormJurnal } from "./components/jurnal/FormJurnal";
+import { FilterJurnal } from "./components/jurnal/FilterJurnal";
+import { PencarianJurnal } from "./components/jurnal/PencarianJurnal";
 import { DaftarJurnal } from "./components/jurnal/DaftarJurnal";
-/*import HalamanLatihan from "./latihan/HalamanLatihan";*/
+import { useLocalStorage } from "./hooks/useLocalStorage";
+import { usePenundaan } from "./hooks/usePenundaan";
+import { adalahDaftarJurnal } from "./utils/guard";
 import { jurnalTiruan } from "./data/jurnalTiruan";
 import { daftarPeserta } from "./data/pesertaTiruan";
-import type {FilterStatus, Jurnal, JurnalBaru, StatusReview} from "./types/jurnal";
+import type { FilterStatus, Jurnal, JurnalBaru, StatusReview } from "./types/jurnal";
+import type { Peran } from "./types/peserta";
 import styles from "./App.module.css";
-import {FormJurnal} from "./components/jurnal/FormJurnal.tsx";
-import {FilterStatusJurnal} from "./components/jurnal/FilterStatusJurnal.tsx";
-import {PencarianJurnal} from "./components/jurnal/PencarianJurnal.tsx";
-import { useLocalStorage } from "./hooks/useLocalStorage";
-import { adalahDaftarJurnal } from "./utils/guard";
-import {usePenundaan} from "./hooks/usePenundaan.ts";
 
 export default function App() {
     const [jurnal, setJurnal] = useLocalStorage<Jurnal[]>(
@@ -21,14 +22,17 @@ export default function App() {
         jurnalTiruan,
         adalahDaftarJurnal
     );
+    const [peran, setPeran] = useState<Peran>("peserta");
     const [filter, setFilter] = useState<FilterStatus>("semua");
     const [kataKunci, setKataKunci] = useState("");
     const kataKunciTunda = usePenundaan(kataKunci, 300);
-    useEffect(() => {
-        document.title = `Jurnal Magang (${jurnal.length})`;
-    }, [jurnal.length]);
-
     const peserta = daftarPeserta.find((p) => p.id === 1);
+
+    const belumDireview = jurnal.filter((j) => j.statusReview === "belum").length;
+
+    useEffect(() => {
+        document.title = `Jurnal Magang (${belumDireview} belum direview)`;
+    }, [belumDireview]);
 
     const tampil = jurnal
         .filter((j) => filter === "semua" || j.statusReview === filter)
@@ -38,15 +42,10 @@ export default function App() {
         (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
     );
 
-    function hapusJurnal(id: number) {
-        setJurnal((daftar) => daftar.filter((j) => j.id !== id));
-    }
-
-    function ubahStatus(id: number, status: StatusReview) {
-        setJurnal((daftar) =>
-            daftar.map((j) => (j.id === id ? { ...j, statusReview: status } : j))
-        );
-    }
+    const pesanKosong =
+        jurnal.length === 0
+            ? "Belum ada jurnal. Tulis jurnal pertamamu lewat form di atas."
+            : "Tidak ada jurnal yang cocok dengan filter atau pencarian.";
 
     function tambahJurnal(data: JurnalBaru) {
         const baru: Jurnal = {
@@ -61,9 +60,24 @@ export default function App() {
         setJurnal((daftar) => [baru, ...daftar]);
     }
 
+    function hapusJurnal(id: number) {
+        setJurnal((daftar) => daftar.filter((j) => j.id !== id));
+    }
+
+    function simpanReview(id: number, status: StatusReview, catatan: string) {
+        setJurnal((daftar) =>
+            daftar.map((j) =>
+                j.id === id
+                    ? { ...j, statusReview: status, catatanMentor: catatan.trim() || null }
+                    : j
+            )
+        );
+    }
+
     return (
         <div className={styles.halaman}>
             <Header judul="Jurnal Magang" namaPeserta={peserta?.nama ?? "Peserta"} />
+            <SaklarPeran peran={peran} onUbah={setPeran} />
             <main>
                 <Kartu judul="Ringkasan">
                     <RingkasanJurnal jurnal={jurnal} />
@@ -73,13 +87,18 @@ export default function App() {
                 </Kartu>
                 <Kartu judul="Daftar Jurnal">
                     <div className={styles.kontrol}>
-                        <FilterStatusJurnal nilai={filter} onUbah={setFilter} />
+                        <FilterJurnal nilai={filter} onUbah={setFilter} />
                         <PencarianJurnal nilai={kataKunci} onUbah={setKataKunci} />
                     </div>
-                    <DaftarJurnal jurnal={terurut} onHapus={hapusJurnal} onUbahStatus={ubahStatus} />
+                    <DaftarJurnal
+                        jurnal={terurut}
+                        peran={peran}
+                        pesanKosong={pesanKosong}
+                        onHapus={hapusJurnal}
+                        onReview={simpanReview}
+                    />
                 </Kartu>
             </main>
-            {/*<HalamanLatihan />*/}
         </div>
     );
 }
