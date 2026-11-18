@@ -144,3 +144,15 @@ React mengenali item lewat key. Kalau key berupa indeks, yang dikenali hanya pos
 Setelah “Satu” dihapus, “Dua” pindah ke indeks 0 dan memakai key yang tadinya milik “Satu”, sehingga React memakai ulang elemen li lama beserta isi input-nya dan AAA menempel di samping “Dua”. 
 Dengan key berupa nilai unik dan stabil, React tahu elemen milik “Satu” memang dibuang dan elemen “Dua” dipertahankan beserta isinya. Itu sebabnya key harus berupa ID dari data, bukan indeks.
 </details>
+
+<details>
+<summary>apa itu origin, apa yang diblokir browser, di mana konfigurasinya, dan kenapa curl tidak terkena.</summary>
+
+Origin adalah gabungan skema, host, dan port, jadi localhost:5173 dan localhost:3000 dihitung sebagai dua origin berbeda. Browser menerapkan same-origin policy: skrip dari satu origin tidak boleh membaca respons origin lain kecuali server tujuan mengizinkannya lewat header Access-Control-Allow-Origin. Yang diblokir adalah pembacaan respons oleh browser, sedangkan server tetap menerima dan memprosesnya. Izin itu dikonfigurasi di server, yaitu di middleware cors lewat daftar CORS_ORIGINS. curl tidak terkena karena CORS hanya ditegakkan oleh browser, dan Swagger tidak terkena karena halamannya disajikan dari origin yang sama dengan API (localhost:3000).
+</details>
+
+<details>
+<summary>Mengapa proxy Vite di development dan nginx di produksi bisa dipakai bergantian tanpa mengubah kode frontend?</summary>
+
+Proxy Vite di development dan nginx di produksi memegang peran yang sama: menerima permintaan di origin yang sama dengan frontend, lalu meneruskan yang berawalan /api ke backend. Karena kode frontend hanya memakai alamat relatif seperti /api/v1/..., ia tidak perlu tahu alamat backend yang sebenarnya dan tidak berubah saat pindah lingkungan. Browser pun hanya melihat satu origin, sehingga CORS tidak terlibat. Yang berbeda hanya konfigurasi proxy-nya (vite.config.ts saat development, konfigurasi nginx saat produksi), bukan kode aplikasi.
+</details>
