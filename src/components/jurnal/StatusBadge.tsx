@@ -1,7 +1,7 @@
 // src/components/jurnal/StatusBadge.tsx
 import styles from "./StatusBadge.module.css";
 import { cx } from "../../utils/cx";
-import type { StatusReview } from "../../types/jurnal";
+import type { StatusReview } from "../../api/types";
 
 export function StatusBadge({ status }: { status: StatusReview }) {
     return (

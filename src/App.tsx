@@ -12,7 +12,8 @@ import { usePenundaan } from "./hooks/usePenundaan";
 import { adalahDaftarJurnal } from "./utils/guard";
 import { jurnalTiruan } from "./data/jurnalTiruan";
 import { daftarPeserta } from "./data/pesertaTiruan";
-import type { FilterStatus, Jurnal, JurnalBaru, StatusReview } from "./types/jurnal";
+import type { Jurnal, JurnalBaru, StatusReview } from "./api/types";
+import type { FilterStatus } from "./types/jurnal";
 import type { Peran } from "./types/peserta";
 import styles from "./App.module.css";
 
@@ -53,8 +54,9 @@ export default function App() {
             pesertaId: 1,
             ...data,
             lampiran: null,
+            rencanaBesok: null,
             statusReview: "belum",
-            catatanMentor: null,
+            catatan: null,
             createdAt: new Date().toISOString(),
         };
         setJurnal((daftar) => [baru, ...daftar]);

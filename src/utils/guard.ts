@@ -27,6 +27,7 @@ function adalahJurnal(x: unknown): x is Jurnal {
         "kegiatan" in x && typeof x.kegiatan === "string" &&
         "statusReview" in x && (x.statusReview === "belum" || x.statusReview === "sudah") &&
         "createdAt" in x && typeof x.createdAt === "string" &&
+        "rencanaBesok" in x && typeof x.rencanaBesok === "string" &&
         teksOpsional(x, "hambatan") &&
         teksOpsional(x, "linkCommit") &&
         teksOpsional(x, "catatanMentor") &&

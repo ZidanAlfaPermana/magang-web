@@ -1,5 +1,5 @@
 import { useState } from "react";
-import type { Jurnal, StatusReview } from "../../types/jurnal";
+import type { Jurnal, StatusReview } from "../../api/types";
 import type { Peran } from "../../types/peserta";
 import { formatTanggal } from "../../utils/format";
 import { Button } from "../ui/Button";
@@ -28,8 +28,8 @@ export function JurnalCard({ jurnal, peran = "peserta", onHapus, onReview }: Jur
                 <StatusBadge status={jurnal.statusReview} />
             </header>
             <p className={styles.kegiatan}>{jurnal.kegiatan}</p>
-            {jurnal.catatanMentor && (
-                <p className={styles.baris}>Catatan mentor: {jurnal.catatanMentor}</p>
+            {jurnal.catatan && (
+                <p className={styles.baris}>Catatan mentor: {jurnal.catatan}</p>
             )}
             {adaDetail && (
                 <Button

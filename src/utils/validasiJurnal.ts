@@ -1,4 +1,4 @@
-import type { StatusReview } from "../types/jurnal";
+import type { StatusReview } from "../api/types";
 
 export interface FormReviewState {
     status: StatusReview;
@@ -38,11 +38,18 @@ export function validasiFormJurnal(nilai: FormJurnalState): FormJurnalErrors {
     const errors: FormJurnalErrors = {};
     const kegiatan = nilai.kegiatan.trim();
     const link = nilai.linkCommit.trim();
+    const rencana = nilai.rencanaBesok.trim();
 
     if (kegiatan.length < 10) {
         errors.kegiatan = "Kegiatan minimal 10 karakter";
     } else if (kegiatan.length > 2000) {
         errors.kegiatan = "Kegiatan maksimal 2000 karakter";
+    }
+
+    if (rencana.length < 5) {
+        errors.rencanaBesok = "Rencana besok minimal 5 karakter";
+    } else if (rencana.length > 2000) {
+        errors.rencanaBesok = "Rencana besok maksimal 2000 karakter";
     }
 
     if (nilai.hambatan.trim().length > 2000) {
@@ -54,4 +61,11 @@ export function validasiFormJurnal(nilai: FormJurnalState): FormJurnalErrors {
     }
 
     return errors;
+}
+
+export interface FormJurnalState {
+    kegiatan: string;
+    rencanaBesok: string;
+    hambatan: string;
+    linkCommit: string;
 }

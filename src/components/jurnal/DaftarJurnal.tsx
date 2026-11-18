@@ -1,4 +1,4 @@
-import type { Jurnal, StatusReview } from "../../types/jurnal";
+import type { Jurnal, StatusReview } from "../../api/types";
 import type { Peran } from "../../types/peserta";
 import { Alert } from "../ui/Alert";
 import { JurnalCard } from "./JurnalCard";

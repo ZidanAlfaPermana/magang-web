@@ -1,8 +1,8 @@
-import type { Peserta } from "../types/peserta";
+import type { Peserta } from "../api/types";
 
 export const daftarPeserta: Peserta[] = [
-    { id: 1, nama: "Ahmad", sekolah: "SMK 5 Malang", fase: 2, email: "ahmad@test.com", status: "aktif", role: "peserta" },
-    { id: 2, nama: "Basor", sekolah: "SMK 5 Malang", fase: 1, email: "basor@test.com", status: "aktif", role: "peserta" },
-    { id: 3, nama: "Rojab", sekolah: "SMK 5 Malang", fase: 3, email: "rojab@test.com", status: "aktif", role: "peserta" },
-    { id: 4, nama: "Mujid", sekolah: "SMK 5 Malang", fase: 2, email: "mujid@test.com", status: "aktif", role: "peserta" },
+    { id: 1, nama: "Ahmad", sekolah: "SMK 5 Malang", fase: 2, email: "ahmad@test.com", status: "aktif", role: "peserta", createdAt: "10-01-2008" },
+    { id: 2, nama: "Basor", sekolah: "SMK 5 Malang", fase: 1, email: "basor@test.com", status: "aktif", role: "peserta", createdAt: "10-01-2008" },
+    { id: 3, nama: "Rojab", sekolah: "SMK 5 Malang", fase: 3, email: "rojab@test.com", status: "aktif", role: "peserta", createdAt: "10-01-2008" },
+    { id: 4, nama: "Mujid", sekolah: "SMK 5 Malang", fase: 2, email: "mujid@test.com", status: "aktif", role: "peserta", createdAt: "10-01-2008" },
 ];

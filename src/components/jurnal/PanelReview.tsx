@@ -3,7 +3,7 @@ import type { ChangeEventHandler, FormEventHandler } from "react";
 import { Button } from "../ui/Button";
 import { validasiReview } from "../../utils/validasiJurnal";
 import type { FormReviewErrors } from "../../utils/validasiJurnal";
-import type { Jurnal, StatusReview } from "../../types/jurnal";
+import type { Jurnal, StatusReview } from "../../api/types";
 import styles from "../ui/Form.module.css";
 
 interface PanelReviewProps {
@@ -18,7 +18,7 @@ export function PanelReview({ jurnal, onSimpan, onBatal }: PanelReviewProps) {
     const idError = `${idDasar}-error`;
     const catatanRef = useRef<HTMLTextAreaElement>(null);
     const [status, setStatus] = useState<StatusReview>("sudah");
-    const [catatan, setCatatan] = useState(jurnal.catatanMentor ?? "");
+    const [catatan, setCatatan] = useState(jurnal.catatan ?? "");
     const [errors, setErrors] = useState<FormReviewErrors>({});
 
     const ubahCatatan: ChangeEventHandler<HTMLTextAreaElement> = (e) => {

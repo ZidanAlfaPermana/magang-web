@@ -10,8 +10,8 @@ interface FormJurnalProps {
     onTambah: (data: JurnalBaru) => void;
 }
 
-const NILAI_AWAL: FormJurnalState = { kegiatan: "", hambatan: "", linkCommit: "" };
-const URUTAN_KOLOM: ReadonlyArray<keyof FormJurnalState> = ["kegiatan", "hambatan", "linkCommit"];
+const NILAI_AWAL: FormJurnalState = { kegiatan: "", rencanaBesok: "", hambatan: "", linkCommit: "" };
+const URUTAN_KOLOM: ReadonlyArray<keyof FormJurnalState> = ["kegiatan", "hambatan", "rencanaBesok", "linkCommit"];
 
 export function FormJurnal({ onTambah }: FormJurnalProps) {
     const [nilai, setNilai] = useState<FormJurnalState>(NILAI_AWAL);
@@ -40,8 +40,9 @@ export function FormJurnal({ onTambah }: FormJurnalProps) {
 
         onTambah({
             kegiatan: nilai.kegiatan.trim(),
-            hambatan: nilai.hambatan.trim() || null,
-            linkCommit: nilai.linkCommit.trim() || null,
+            rencanaBesok: nilai.rencanaBesok.trim(),
+            hambatan: nilai.hambatan.trim() || undefined,
+            linkCommit: nilai.linkCommit.trim() || undefined,
         });
         setNilai(NILAI_AWAL);
     };
@@ -78,6 +79,23 @@ export function FormJurnal({ onTambah }: FormJurnalProps) {
                 {errors.hambatan && (
                     <p id="hambatan-error" role="alert" className={styles.error}>
                         {errors.hambatan}
+                    </p>
+                )}
+            </div>
+
+            <div className={styles.kolom}>
+                <label htmlFor="rencanaBesok">Rencana besok</label>
+                <textarea
+                    id="rencanaBesok"
+                    name="rencanaBesok"
+                    value={nilai.rencanaBesok}
+                    onChange={ubah}
+                    aria-invalid={errors.rencanaBesok ? true : undefined}
+                    aria-describedby={errors.rencanaBesok ? "rencanaBesok-error" : undefined}
+                />
+                {errors.rencanaBesok && (
+                    <p id="rencanaBesok-error" role="alert" className={styles.error}>
+                        {errors.rencanaBesok}
                     </p>
                 )}
             </div>

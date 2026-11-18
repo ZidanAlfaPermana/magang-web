@@ -1,4 +1,4 @@
-import type { Peserta } from "../../types/peserta.ts";
+import type { Peserta } from "../../api/types";
 
 type PesertaRingkasProps = Pick<Peserta, "nama" | "sekolah" | "fase">;
 

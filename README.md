@@ -156,3 +156,9 @@ Origin adalah gabungan skema, host, dan port, jadi localhost:5173 dan localhost:
 
 Proxy Vite di development dan nginx di produksi memegang peran yang sama: menerima permintaan di origin yang sama dengan frontend, lalu meneruskan yang berawalan /api ke backend. Karena kode frontend hanya memakai alamat relatif seperti /api/v1/..., ia tidak perlu tahu alamat backend yang sebenarnya dan tidak berubah saat pindah lingkungan. Browser pun hanya melihat satu origin, sehingga CORS tidak terlibat. Yang berbeda hanya konfigurasi proxy-nya (vite.config.ts saat development, konfigurasi nginx saat produksi), bukan kode aplikasi.
 </details>
+
+<details>
+<summary>Kenapa dokumen API yang longgar menghasilkan tipe frontend yang longgar? Apa hubungan hal itu dengan pelajaran "tulis dokumen yang akurat" di Minggu 16?</summary>
+
+Tipe yang dihasilkan hanya menerjemahkan apa yang tertulis di dokumen OpenAPI. Di OpenAPI, properti dianggap wajib hanya jika disebut di required, jadi schema tanpa required menghasilkan tipe dengan semua properti opsional (id?: number), dan frontend terpaksa memeriksa nilai yang sebenarnya selalu ada. Dokumen yang tidak akurat (kurang required, lupa nullable, nama field salah) menghasilkan tipe yang longgar atau menyesatkan, dan kesalahan itu menjalar ke semua kode yang memakainya. Itulah hubungannya dengan pelajaran Minggu 16: dokumen harus akurat dan diuji terhadap server, karena sekarang dokumen menjadi sumber tipe dan bukan sekadar bacaan.
+</details>

@@ -1,6 +1,6 @@
 // src/components/PesertaCard.tsx
 // Kirim satu objek utuh
-import type {Peserta} from "../../types/peserta.ts";
+import type {Peserta} from "../../api/types";
 import InfoBaris from "../InfoBaris.tsx";
 
 interface PesertaCardProps {
