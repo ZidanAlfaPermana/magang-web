@@ -13,3 +13,4 @@ export type ErrorResponse = Skema["ErrorResponse"];
 export type LoginResponse = Skema["LoginResponse"];
 export type JurnalListResponse = Skema["JurnalListResponse"];
 export type JurnalResponse = Skema["JurnalResponse"];
+export type JurnalListTotalResponse = Skema["JurnalListTotalResponse"];

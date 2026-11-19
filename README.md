@@ -51,6 +51,7 @@ src/
 - **Hasil filter, urutan, dan angka ringkasan adalah data turunan.** Dihitung saat render dan tidak disimpan sebagai state, jadi tidak ada salinan basi.
 - **Validasi berupa fungsi murni** (`validasiFormJurnal`, `validasiReview`) yang terpisah dari komponen. Aturannya meniru DTO di backend, sedangkan server tetap penentu akhir.
 - **Data dari localStorage diperiksa dengan type guard, bukan `as`.** Tipe TypeScript hilang saat runtime, dan isi localStorage bisa diubah pengguna.
+- **Hanya client.ts yang memakai as**: undefined as T untuk respons 204 yang memang tanpa isi, dan json as T sebagai satu-satunya titik kepercayaan pada kontrak OpenAPI.
 
 ---
 
