@@ -163,3 +163,47 @@ Proxy Vite di development dan nginx di produksi memegang peran yang sama: meneri
 
 Tipe yang dihasilkan hanya menerjemahkan apa yang tertulis di dokumen OpenAPI. Di OpenAPI, properti dianggap wajib hanya jika disebut di required, jadi schema tanpa required menghasilkan tipe dengan semua properti opsional (id?: number), dan frontend terpaksa memeriksa nilai yang sebenarnya selalu ada. Dokumen yang tidak akurat (kurang required, lupa nullable, nama field salah) menghasilkan tipe yang longgar atau menyesatkan, dan kesalahan itu menjalar ke semua kode yang memakainya. Itulah hubungannya dengan pelajaran Minggu 16: dokumen harus akurat dan diuji terhadap server, karena sekarang dokumen menjadi sumber tipe dan bukan sekadar bacaan.
 </details>
+
+<details>
+<summary>Apa itu Parameter property (constructor(readonly status: number))?</summary>
+
+Parameter property (constructor(readonly status: number)) adalah sintaks TypeScript yang menghasilkan kode, bukan sekadar anotasi tipe. Template Vite mengaktifkan erasableSyntaxOnly, yaitu hanya mengizinkan sintaks yang bisa dihapus begitu saja saat tipe dibuang. Karena itu properti ditulis eksplisit dan diisi di dalam konstruktor.
+</details>
+
+<details>
+<summary>Peta kode ke perilaku</summary>
+
+| Kode error | Perilaku aplikasi | Dibangun |
+|---|---|---|
+| NETWORK_ERROR | Pesan koneksi dan tombol coba lagi | Kamis |
+| UNAUTHORIZED | Arahkan ke halaman login | Minggu 20 |
+| TOKEN_EXPIRED | Segarkan token otomatis, ulangi permintaan | Minggu 20 |
+| INVALID_TOKEN | Hapus sesi, arahkan ke login | Minggu 20 |
+| FORBIDDEN | Pesan tidak punya akses, sembunyikan aksi yang tidak boleh | Minggu 20 |
+| NOT_FOUND | Pesan data tidak ditemukan | Kamis |
+| VALIDATION_ERROR | Pesan di bawah kolom yang salah | Jumat |
+| CONFLICT | Pesan di form (data sudah ada) | Jumat |
+| RATE_LIMITED | Pesan tunggu, nonaktifkan tombol sementara | Rabu |
+| PAYLOAD_TOO_LARGE | Pesan data terlalu besar | Rabu |
+| INTERNAL_ERROR | Pesan umum dan kode laporan | Rabu |
+| BAD_RESPONSE | Pesan umum dan kode laporan | Rabu |
+| INVALID_JSON, UNKNOWN_ERROR | Pesan umum | Rabu |
+</details>
+
+<details>
+<summary>Kenapa “kosong” bukan status</summary>
+
+Kosong adalah hasil permintaan yang berhasil, bukan keadaan permintaan itu sendiri: server menjawab sukses dan datanya kebetulan tidak punya isi. Keputusan menampilkan “Belum ada jurnal” adalah urusan tampilan dan cukup dibaca dari data.daftar.length === 0. Kalau dijadikan status ketiga, hook harus memeriksa isi data, dan union bisa memuat keadaan ganjil seperti status “kosong” yang membawa data berisi.
+</details>
+
+<details>
+<summary>Kesimpulan dari race condition</summary>
+
+Tanpa pembatalan dan pencocokan kunci, jawaban yang lebih lambat dari permintaan lama bisa tiba terakhir dan menimpa data permintaan terbaru. Layar akhirnya menampilkan data yang tidak sesuai dengan halaman yang dipilih pengguna.
+</details>
+
+<details>
+<summary>Sebutkan tiga masalah yang harus kamu tangani sendiri saat mengambil data di useEffect yang tidak ada jika datanya statis. Menurutmu alat seperti apa yang seharusnya mengurusnya untukmu?</summary>
+
+Saat mengambil data di useEffect, tiga hal harus kita tangani sendiri yang tidak ada pada data statis. Pertama, race condition: jawaban lama bisa tiba terakhir dan menimpa data baru, sehingga permintaan harus dibatalkan dan hasilnya dicocokkan dengan permintaan yang sedang berlaku. Kedua, keadaan memuat, gagal, dan berhasil harus dikelola konsisten, termasuk “coba lagi”. Ketiga, pembatalan saat komponen dilepas dan efek yang berjalan dua kali di StrictMode. Alat seperti TanStack Query seharusnya mengurusnya, karena ia menangani pembatalan, status, percobaan ulang, dan penyimpanan hasil sehingga komponen cukup membaca hasilnya.
+</details>
