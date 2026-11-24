@@ -207,3 +207,15 @@ Tanpa pembatalan dan pencocokan kunci, jawaban yang lebih lambat dari permintaan
 
 Saat mengambil data di useEffect, tiga hal harus kita tangani sendiri yang tidak ada pada data statis. Pertama, race condition: jawaban lama bisa tiba terakhir dan menimpa data baru, sehingga permintaan harus dibatalkan dan hasilnya dicocokkan dengan permintaan yang sedang berlaku. Kedua, keadaan memuat, gagal, dan berhasil harus dikelola konsisten, termasuk “coba lagi”. Ketiga, pembatalan saat komponen dilepas dan efek yang berjalan dua kali di StrictMode. Alat seperti TanStack Query seharusnya mengurusnya, karena ia menangani pembatalan, status, percobaan ulang, dan penyimpanan hasil sehingga komponen cukup membaca hasilnya.
 </details>
+
+<details>
+<summary>perbedaan antara replace dengan tanpa replace saat menekan tombol Back</summary>
+
+Navigate dengan replace mengganti entri riwayat saat ini, jadi / hilang dari riwayat dan digantikan /jurnal. Saat pengguna menekan Back dari /jurnal, ia kembali ke halaman sebelum /. Tanpa replace, / tetap ada di riwayat, sehingga Back membawa pengguna ke / yang langsung mengarahkannya lagi ke /jurnal, dan ia terjebak di halaman yang sama.
+</details> 
+
+<details>
+<summary>Kenapa Link tidak boleh diganti dengan elemen a pada aplikasi yang menyimpan token di memori? Apa yang terjadi pada token itu bila kamu memakai elemen a?</summary>
+
+Link hanya mengganti tampilan di dalam aplikasi yang sama lewat History API, sehingga JavaScript, state, dan variabel di memori tetap hidup. Elemen a meminta halaman baru ke server, jadi seluruh aplikasi dimuat ulang dari awal. Token di aplikasi ini disimpan di variabel memori (accessToken di client.ts), sehingga saat halaman dimuat ulang variabel itu kembali null dan pengguna dianggap belum login. Akibatnya setiap klik elemen a pada menu membuat pengguna harus login lagi.
+</details>

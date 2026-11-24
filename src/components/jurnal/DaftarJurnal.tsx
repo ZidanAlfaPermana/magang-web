@@ -11,7 +11,7 @@ export function DaftarJurnal({ jurnal }: DaftarJurnalProps) {
         <ul className={styles.daftar}>
             {jurnal.map((j) => (
                 <li key={j.id}>
-                    <JurnalCard jurnal={j} />
+                    <JurnalCard jurnal={j} denganTautan />
                 </li>
             ))}
         </ul>

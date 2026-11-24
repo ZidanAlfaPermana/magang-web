@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { useJurnalSaya } from "../../hooks/useJurnalSaya";
 import { kodeLaporan, pesanUntukPengguna } from "../../api/pesan";
 import { Alert } from "../ui/Alert";
@@ -7,12 +6,16 @@ import { Kartu } from "../ui/Kartu";
 import { DaftarJurnal } from "./DaftarJurnal";
 import { FormJurnal } from "./FormJurnal";
 
-export function JurnalSaya() {
-    const [halaman, setHalaman] = useState(1);
+interface JurnalSayaProps {
+    halaman: number;
+    onUbahHalaman: (halaman: number) => void;
+}
+
+export function JurnalSaya({ halaman, onUbahHalaman }: JurnalSayaProps) {
     const { hasil, muatUlang } = useJurnalSaya(halaman);
 
     function setelahTambah() {
-        setHalaman(1);
+        onUbahHalaman(1);
         muatUlang();
     }
 
@@ -38,6 +41,16 @@ export function JurnalSaya() {
                 const { daftar, meta } = hasil.data;
 
                 if (daftar.length === 0) {
+                    if (meta.page > 1) {
+                        return (
+                            <>
+                                <p>Halaman {meta.page} tidak memiliki jurnal.</p>
+                                <Button ukuran="sm" onClick={() => onUbahHalaman(1)}>
+                                    Ke halaman pertama
+                                </Button>
+                            </>
+                        );
+                    }
                     return <p>Belum ada jurnal. Tulis jurnal pertamamu!</p>;
                 }
 
@@ -49,7 +62,7 @@ export function JurnalSaya() {
                                 ukuran="sm"
                                 variant="secondary"
                                 disabled={!meta.hasPrev}
-                                onClick={() => setHalaman((h) => h - 1)}
+                                onClick={() => onUbahHalaman(halaman - 1)}
                             >
                                 Sebelumnya
                             </Button>
@@ -61,7 +74,7 @@ export function JurnalSaya() {
                                 ukuran="sm"
                                 variant="secondary"
                                 disabled={!meta.hasNext}
-                                onClick={() => setHalaman((h) => h + 1)}
+                                onClick={() => onUbahHalaman(halaman + 1)}
                             >
                                 Berikutnya
                             </Button>

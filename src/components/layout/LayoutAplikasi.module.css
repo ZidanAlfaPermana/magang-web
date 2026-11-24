@@ -1,0 +1,4 @@
+.menu { display: flex; flex-wrap: wrap; align-items: center; gap: 16px; padding: 12px 24px; }
+.tautan { color: var(--warna-utama); text-decoration: none; padding: 4px 0; border-bottom: 2px solid transparent; }
+.tautan:focus-visible { outline: 3px solid var(--warna-utama); outline-offset: 2px; }
+.aktif { font-weight: 700; border-bottom-color: var(--warna-utama); }

@@ -4,12 +4,14 @@ import { formatTanggal } from "../../utils/format";
 import { Button } from "../ui/Button";
 import { StatusBadge } from "./StatusBadge";
 import styles from "./JurnalCard.module.css";
+import { Link } from "react-router";
 
 interface JurnalCardProps {
     jurnal: Jurnal;
+    denganTautan?: boolean;
 }
 
-export function JurnalCard({ jurnal }: JurnalCardProps) {
+export function JurnalCard({ jurnal, denganTautan = false }: JurnalCardProps) {
     const [terbuka, setTerbuka] = useState(false);
     const lampiran = jurnal.lampiran ?? [];
     const adaDetail = Boolean(jurnal.hambatan) || lampiran.length > 0;
@@ -21,6 +23,13 @@ export function JurnalCard({ jurnal }: JurnalCardProps) {
                 <StatusBadge status={jurnal.statusReview} />
             </header>
             <p className={styles.kegiatan}>{jurnal.kegiatan}</p>
+            {denganTautan && (
+                <p className={styles.footer}>
+                    <Link to={`/jurnal/${jurnal.id}`} aria-label={`Lihat detail jurnal: ${jurnal.kegiatan}`}>
+                        Lihat detail
+                    </Link>
+                </p>
+            )}
             {jurnal.catatan && (
                 <p className={styles.baris}>Catatan mentor: {jurnal.catatan}</p>
             )}

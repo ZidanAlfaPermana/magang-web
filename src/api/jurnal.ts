@@ -18,3 +18,8 @@ export async function buatJurnal(data: JurnalBaru) {
     const body = await request<JurnalResponse>("POST", "/jurnal", { body: data });
     return body.data;
 }
+
+export async function ambilJurnal(id: number, { signal }: { signal?: AbortSignal } = {}) {
+    const body = await request<JurnalResponse>("GET", `/jurnal/${id}`, { signal });
+    return body.data;
+}
