@@ -1,6 +1,9 @@
 import type { ApiError } from "./errors";
 
 export function pesanUntukPengguna(error: ApiError): string {
+    if (error.kode === "BAD_RESPONSE" && error.status >= 500) {
+        return "Server tidak dapat dihubungi saat ini. Coba lagi beberapa saat lagi.";
+    }
     switch (error.kode) {
         case "NETWORK_ERROR":
             return "Tidak dapat terhubung ke server. Periksa koneksi internetmu lalu coba lagi.";
@@ -25,4 +28,11 @@ export function pesanUntukPengguna(error: ApiError): string {
 
 export function kodeLaporan(error: ApiError): string | null {
     return error.requestId ? `Kode laporan: ${error.requestId}` : null;
+}
+
+export function pesanLogin(error: ApiError): string {
+    if (error.kode === "UNAUTHORIZED") {
+        return "Email atau password salah.";
+    }
+    return pesanUntukPengguna(error);
 }

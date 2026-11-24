@@ -1,70 +1,83 @@
 import { useState } from "react";
 import { useJurnalSaya } from "../../hooks/useJurnalSaya";
-import { pesanUntukPengguna } from "../../api/pesan";
+import { kodeLaporan, pesanUntukPengguna } from "../../api/pesan";
 import { Alert } from "../ui/Alert";
 import { Button } from "../ui/Button";
-import { JurnalCard } from "./JurnalCard";
-import styles from "./DaftarJurnal.module.css";
+import { Kartu } from "../ui/Kartu";
+import { DaftarJurnal } from "./DaftarJurnal";
+import { FormJurnal } from "./FormJurnal";
 
 export function JurnalSaya() {
     const [halaman, setHalaman] = useState(1);
     const { hasil, muatUlang } = useJurnalSaya(halaman);
 
-    switch (hasil.status) {
-        case "memuat":
-            return <p role="status">Memuat jurnal...</p>;
+    function setelahTambah() {
+        setHalaman(1);
+        muatUlang();
+    }
 
-        case "gagal":
-            return (
-                <Alert tipe="bahaya">
-                    <p>{pesanUntukPengguna(hasil.error)}</p>
-                    {hasil.error.requestId && <p>Kode laporan: {hasil.error.requestId}</p>}
-                    <Button ukuran="sm" onClick={muatUlang}>
-                        Coba lagi
-                    </Button>
-                </Alert>
-            );
+    function isiDaftar() {
+        switch (hasil.status) {
+            case "memuat":
+                return <p role="status">Memuat jurnal...</p>;
 
-        case "berhasil": {
-            const { daftar, meta } = hasil.data;
-
-            if (daftar.length === 0) {
-                return <p>Belum ada jurnal. Tulis jurnal pertamamu!</p>;
+            case "gagal": {
+                const laporan = kodeLaporan(hasil.error);
+                return (
+                    <Alert tipe="bahaya">
+                        <p>{pesanUntukPengguna(hasil.error)}</p>
+                        {laporan && <p>{laporan}</p>}
+                        <Button ukuran="sm" onClick={muatUlang}>
+                            Coba lagi
+                        </Button>
+                    </Alert>
+                );
             }
 
-            return (
-                <>
-                    <ul className={styles.daftar}>
-                        {daftar.map((j) => (
-                            <li key={j.id}>
-                                <JurnalCard jurnal={j} />
-                            </li>
-                        ))}
-                    </ul>
-                    <nav aria-label="Halaman">
-                        <Button
-                            ukuran="sm"
-                            variant="secondary"
-                            disabled={!meta.hasPrev}
-                            onClick={() => setHalaman((h) => h - 1)}
-                        >
-                            Sebelumnya
-                        </Button>
-                        <span>
-                            {" "}
-                            Halaman {meta.page} dari {meta.totalPages}{" "}
-                        </span>
-                        <Button
-                            ukuran="sm"
-                            variant="secondary"
-                            disabled={!meta.hasNext}
-                            onClick={() => setHalaman((h) => h + 1)}
-                        >
-                            Berikutnya
-                        </Button>
-                    </nav>
-                </>
-            );
+            case "berhasil": {
+                const { daftar, meta } = hasil.data;
+
+                if (daftar.length === 0) {
+                    return <p>Belum ada jurnal. Tulis jurnal pertamamu!</p>;
+                }
+
+                return (
+                    <>
+                        <DaftarJurnal jurnal={daftar} />
+                        <nav aria-label="Halaman">
+                            <Button
+                                ukuran="sm"
+                                variant="secondary"
+                                disabled={!meta.hasPrev}
+                                onClick={() => setHalaman((h) => h - 1)}
+                            >
+                                Sebelumnya
+                            </Button>
+                            <span>
+                                {" "}
+                                Halaman {meta.page} dari {meta.totalPages}{" "}
+                            </span>
+                            <Button
+                                ukuran="sm"
+                                variant="secondary"
+                                disabled={!meta.hasNext}
+                                onClick={() => setHalaman((h) => h + 1)}
+                            >
+                                Berikutnya
+                            </Button>
+                        </nav>
+                    </>
+                );
+            }
         }
     }
+
+    return (
+        <>
+            <Kartu judul="Tulis Jurnal">
+                <FormJurnal onBerhasil={setelahTambah} />
+            </Kartu>
+            <Kartu judul="Jurnal Saya">{isiDaftar()}</Kartu>
+        </>
+    );
 }

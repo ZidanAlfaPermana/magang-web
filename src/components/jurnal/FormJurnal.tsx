@@ -1,33 +1,73 @@
 import { useState } from "react";
 import type { ChangeEventHandler, FormEventHandler } from "react";
+import { Alert } from "../ui/Alert";
 import { Button } from "../ui/Button";
+import { Kolom } from "../ui/Kolom";
+import { buatJurnal } from "../../api/jurnal";
+import { keApiError } from "../../api/errors";
+import type { ApiError } from "../../api/errors";
+import { kodeLaporan, pesanUntukPengguna } from "../../api/pesan";
+import type { StatusKirim } from "../../hooks/status";
+import { detailKeErrors } from "../../utils/detailError";
 import { validasiFormJurnal } from "../../utils/validasiJurnal";
 import type { FormJurnalErrors, FormJurnalState } from "../../utils/validasiJurnal";
-import type { JurnalBaru } from "../../types/jurnal";
-import styles from "../ui/Form.module.css";
 
 interface FormJurnalProps {
-    onTambah: (data: JurnalBaru) => void;
+    onBerhasil: () => void;
 }
 
-const NILAI_AWAL: FormJurnalState = { kegiatan: "", rencanaBesok: "", hambatan: "", linkCommit: "" };
-const URUTAN_KOLOM: ReadonlyArray<keyof FormJurnalState> = ["kegiatan", "hambatan", "rencanaBesok", "linkCommit"];
+const NILAI_AWAL: FormJurnalState = {
+    kegiatan: "",
+    rencanaBesok: "",
+    hambatan: "",
+    linkCommit: "",
+};
 
-export function FormJurnal({ onTambah }: FormJurnalProps) {
+const URUTAN_KOLOM: ReadonlyArray<keyof FormJurnalState> = [
+    "kegiatan",
+    "hambatan",
+    "rencanaBesok",
+    "linkCommit",
+];
+
+function ringkasGagal(error: ApiError): {
+    kolom: FormJurnalErrors;
+    umum: string[];
+    laporan: string | null;
+} {
+    if (error.kode !== "VALIDATION_ERROR") {
+        return { kolom: {}, umum: [pesanUntukPengguna(error)], laporan: kodeLaporan(error) };
+    }
+
+    const { kolom, umum } = detailKeErrors(error.detail);
+    if (Object.keys(kolom).length === 0 && umum.length === 0) {
+        return { kolom, umum: [pesanUntukPengguna(error)], laporan: kodeLaporan(error) };
+    }
+
+    return { kolom, umum: umum.length > 0 ? [pesanUntukPengguna(error), ...umum] : [], laporan: null };
+}
+
+export function FormJurnal({ onBerhasil }: FormJurnalProps) {
     const [nilai, setNilai] = useState<FormJurnalState>(NILAI_AWAL);
-    const [errors, setErrors] = useState<FormJurnalErrors>({});
+    const [errorsKlien, setErrorsKlien] = useState<FormJurnalErrors>({});
+    const [status, setStatus] = useState<StatusKirim>({ status: "diam" });
+
+    const gagal = status.status === "gagal" ? ringkasGagal(status.error) : null;
+    const errors: FormJurnalErrors = { ...gagal?.kolom, ...errorsKlien };
 
     const ubah: ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement> = (e) => {
         const { name, value } = e.target;
         setNilai((sebelumnya) => ({ ...sebelumnya, [name]: value }));
-        setErrors((sebelumnya) => ({ ...sebelumnya, [name]: undefined }));
+        setErrorsKlien((sebelumnya) => ({ ...sebelumnya, [name]: undefined }));
+        setStatus((s) => (s.status === "gagal" ? { status: "diam" } : s));
     };
 
-    const kirim: FormEventHandler<HTMLFormElement> = (e) => {
+    const kirim: FormEventHandler<HTMLFormElement> = async (e) => {
         e.preventDefault();
+        if (status.status === "mengirim") return;
 
         const hasil = validasiFormJurnal(nilai);
-        setErrors(hasil);
+        setErrorsKlien(hasil);
 
         const kolomSalah = URUTAN_KOLOM.find((kolom) => hasil[kolom]);
         if (kolomSalah) {
@@ -38,86 +78,38 @@ export function FormJurnal({ onTambah }: FormJurnalProps) {
             return;
         }
 
-        onTambah({
-            kegiatan: nilai.kegiatan.trim(),
-            rencanaBesok: nilai.rencanaBesok.trim(),
-            hambatan: nilai.hambatan.trim() || undefined,
-            linkCommit: nilai.linkCommit.trim() || undefined,
-        });
-        setNilai(NILAI_AWAL);
+        setStatus({ status: "mengirim" });
+        try {
+            await buatJurnal({
+                kegiatan: nilai.kegiatan.trim(),
+                hambatan: nilai.hambatan.trim() || undefined,
+                linkCommit: nilai.linkCommit.trim() || undefined,
+            });
+            setNilai(NILAI_AWAL);
+            setStatus({ status: "diam" });
+            onBerhasil();
+        } catch (err) {
+            setStatus({ status: "gagal", error: keApiError(err) });
+        }
     };
 
     return (
         <form onSubmit={kirim} noValidate>
-            <div className={styles.kolom}>
-                <label htmlFor="kegiatan">Kegiatan hari ini</label>
-                <textarea
-                    id="kegiatan"
-                    name="kegiatan"
-                    value={nilai.kegiatan}
-                    onChange={ubah}
-                    aria-invalid={errors.kegiatan ? true : undefined}
-                    aria-describedby={errors.kegiatan ? "kegiatan-error" : undefined}
-                />
-                {errors.kegiatan && (
-                    <p id="kegiatan-error" role="alert" className={styles.error}>
-                        {errors.kegiatan}
-                    </p>
-                )}
-            </div>
-
-            <div className={styles.kolom}>
-                <label htmlFor="hambatan">Hambatan (opsional)</label>
-                <textarea
-                    id="hambatan"
-                    name="hambatan"
-                    value={nilai.hambatan}
-                    onChange={ubah}
-                    aria-invalid={errors.hambatan ? true : undefined}
-                    aria-describedby={errors.hambatan ? "hambatan-error" : undefined}
-                />
-                {errors.hambatan && (
-                    <p id="hambatan-error" role="alert" className={styles.error}>
-                        {errors.hambatan}
-                    </p>
-                )}
-            </div>
-
-            <div className={styles.kolom}>
-                <label htmlFor="rencanaBesok">Rencana besok</label>
-                <textarea
-                    id="rencanaBesok"
-                    name="rencanaBesok"
-                    value={nilai.rencanaBesok}
-                    onChange={ubah}
-                    aria-invalid={errors.rencanaBesok ? true : undefined}
-                    aria-describedby={errors.rencanaBesok ? "rencanaBesok-error" : undefined}
-                />
-                {errors.rencanaBesok && (
-                    <p id="rencanaBesok-error" role="alert" className={styles.error}>
-                        {errors.rencanaBesok}
-                    </p>
-                )}
-            </div>
-
-            <div className={styles.kolom}>
-                <label htmlFor="linkCommit">Link commit (opsional)</label>
-                <input
-                    id="linkCommit"
-                    name="linkCommit"
-                    value={nilai.linkCommit}
-                    onChange={ubah}
-                    aria-invalid={errors.linkCommit ? true : undefined}
-                    aria-describedby={errors.linkCommit ? "linkCommit-error" : undefined}
-                />
-                {errors.linkCommit && (
-                    <p id="linkCommit-error" role="alert" className={styles.error}>
-                        {errors.linkCommit}
-                    </p>
-                )}
-            </div>
-
-            <Button type="submit">Simpan jurnal</Button>
+            {gagal !== null && gagal.umum.length > 0 && (
+                <Alert tipe="bahaya">
+                    {gagal.umum.map((pesan) => (
+                        <p key={pesan}>{pesan}</p>
+                    ))}
+                    {gagal.laporan && <p>{gagal.laporan}</p>}
+                </Alert>
+            )}
+            <Kolom nama="kegiatan" label="Kegiatan hari ini" jenis="textarea" nilai={nilai.kegiatan} onUbah={ubah} error={errors.kegiatan} />
+            <Kolom nama="hambatan" label="Hambatan (opsional)" jenis="textarea" nilai={nilai.hambatan} onUbah={ubah} error={errors.hambatan} />
+            <Kolom nama="rencanaBesok" label="Rencana besok" jenis="textarea" nilai={nilai.rencanaBesok} onUbah={ubah} error={errors.rencanaBesok} />
+            <Kolom nama="linkCommit" label="Link commit (opsional)" nilai={nilai.linkCommit} onUbah={ubah} error={errors.linkCommit} />
+            <Button type="submit" disabled={status.status === "mengirim"}>
+                {status.status === "mengirim" ? "Menyimpan..." : "Simpan jurnal"}
+            </Button>
         </form>
     );
 }

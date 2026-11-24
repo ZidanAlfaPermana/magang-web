@@ -1,4 +1,4 @@
-import { request } from "./clients";
+import { request } from "./client";
 import type { JurnalBaru, JurnalListResponse, JurnalResponse } from "./types";
 
 interface OpsiDaftar {
